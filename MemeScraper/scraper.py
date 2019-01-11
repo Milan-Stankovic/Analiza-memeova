@@ -57,7 +57,7 @@ for url in all_url:
 
         meme_text = full_meme[ i+2: full_meme.index('|',i+1)-1]
 
-        txt.append(meme_text)
+        txt.append(meme_text.replace('&quote' , '"').upper())
         #print(meme_text)
 
 
@@ -99,7 +99,7 @@ for url in all_url:
         upvotes = number_info[j+1: h]
 
         if upvotes is None:
-            upvotes =0;
+            upvotes =0
 
         u.append(int(upvotes.replace(',', '')))
         #print(upvotes)
