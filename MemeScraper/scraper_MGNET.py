@@ -72,7 +72,8 @@ for url_top in urls:
                    temp = temp + secont_text[0].contents[0];
                 else:
                     print("Content error.......")
-                temparr.append(temp.upper())
+                print(temp.replace('&quote' , '"').upper().strip('!"'))
+                temparr.append(temp.replace('&quote' , '"').upper().strip('!"'))
             else:
                 print("Strange erorr!!!")
 
