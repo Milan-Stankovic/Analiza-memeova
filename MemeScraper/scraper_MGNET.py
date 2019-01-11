@@ -72,9 +72,6 @@ for url_top in urls:
                    temp = temp + secont_text[0].contents[0];
                 else:
                     print("Content error.......")
-                temp.replace(",", "")
-                if ',' in temp:
-                    print("COMMA IN CSV, SHIT JUST GOT REAL!!!")
                 temparr.append(temp.upper())
             else:
                 print("Strange erorr!!!")

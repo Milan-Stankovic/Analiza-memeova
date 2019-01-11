@@ -54,7 +54,6 @@ for url in all_url:
 
         i = full_meme.index('|')
 
-
         meme_text = full_meme[ i+2: full_meme.index('|',i+1)-1]
 
         txt.append(meme_text)
