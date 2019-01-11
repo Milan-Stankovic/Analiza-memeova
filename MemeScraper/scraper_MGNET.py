@@ -6,14 +6,19 @@ import io
 from datetime import datetime
 urls = []
 labels = []
-
+maxpage=20
+brojac=-1
 with open('config_MGNET.txt') as f:
     content = f.readlines()
     for line in content:
-        line = line[:-1]
-        parts = line.split(",")
-        labels.append(parts[0])
-        urls.append(parts[1])
+        brojac+=1
+        if brojac==0:
+            maxpage=int(line)
+        else:
+            line = line[:-1]
+            parts = line.split(",")
+            labels.append(parts[0])
+            urls.append(parts[1])
 
 #budzevina
 br=-1
@@ -23,7 +28,7 @@ for url_top in urls:
 
     all_url.append(url_top);
     url_top=url_top+"/alltime/page/"
-    for i in range(2,20):
+    for i in range(2,maxpage):
         all_url.append(url_top+str(i))
 
 
@@ -67,6 +72,9 @@ for url_top in urls:
                    temp = temp + secont_text[0].contents[0];
                 else:
                     print("Content error.......")
+                temp.replace(",", "")
+                if ',' in temp:
+                    print("COMMA IN CSV, SHIT JUST GOT REAL!!!")
                 temparr.append(temp.upper())
             else:
                 print("Strange erorr!!!")
