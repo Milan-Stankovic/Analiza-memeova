@@ -124,7 +124,7 @@ for url in all_url:
     # open a csv file with append, so old data will not be erased
 
 
-    with open('index.csv', 'a') as csv_file:
+    with open('index1.csv', 'a') as csv_file:
         writer = csv.writer(csv_file)
         for idx, item in enumerate(txt):
             if idx in skip:
