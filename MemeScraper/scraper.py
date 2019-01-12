@@ -2,6 +2,7 @@
 import urllib.request  as urllib2
 from bs4 import BeautifulSoup
 import csv
+import io
 from datetime import datetime
 
 urls = []
@@ -103,27 +104,37 @@ for url in urls:
 
             #print(number_info)
 
-            i = number_info.find(' ')
+            try:
+                i = number_info.find(' ')
 
-            views = number_info[0:i]
+                views = number_info[0:i]
 
-            if views is None:
-                views =0;
+                if views is None:
+                    views =0;
 
-            v.append(int(views.replace(',', '')))
+                v.append(int(views.replace(',', '')))
+            except:
+                if views is None:
+                    views = 0;
 
+                v.append(int(views))
            # print(views)
 
-            j = number_info.index(' ', i+1)
+            try:
+                j = number_info.index(' ', i+1)
 
-            h = number_info.index(' ', j+1)
+                h = number_info.index(' ', j+1)
 
-            upvotes = number_info[j+1: h]
+                upvotes = number_info[j+1: h]
+                if upvotes is None:
+                    upvotes = 0
 
-            if upvotes is None:
-                upvotes =0
+                u.append(int(upvotes.replace(',', '')))
+            except:
+                if upvotes is None:
+                    upvotes =0
 
-            u.append(int(upvotes.replace(',', '')))
+                u.append(int(upvotes))
             #print(upvotes)
 
             try:
@@ -146,7 +157,7 @@ for url in urls:
         # open a csv file with append, so old data will not be erased
 
 
-        with open(savefle, 'a') as csv_file:
+        with open(savefle, 'a', encoding="utf-8") as csv_file:
             writer = csv.writer(csv_file)
             for idx, item in enumerate(txt):
                 if idx in skip:
