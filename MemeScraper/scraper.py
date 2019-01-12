@@ -77,8 +77,10 @@ for url in urls:
 
             i = full_meme.index('|')
 
-            meme_text = full_meme[ i+2: full_meme.index('|',i+1)-1]
-
+            try:
+                meme_text = full_meme[ i+2: full_meme.index('|',i+1)-1]
+            except:
+                continue
             txt.append(meme_text.replace('&quote' , '"').upper())
             #print(meme_text)
 
@@ -103,27 +105,24 @@ for url in urls:
 
             #print(number_info)
 
-            i = number_info.find(' ')
+            try:
+                i = number_info.find(' ')
 
-            views = number_info[0:i]
-
-            if views is None:
-                views =0;
-
-            v.append(int(views.replace(',', '')))
+                views = number_info[0:i]
+                v.append(int(views.replace(',', '')))
+            except:
+                v.append(0)
 
            # print(views)
+            try:
+                j = number_info.index(' ', i+1)
 
-            j = number_info.index(' ', i+1)
+                h = number_info.index(' ', j+1)
 
-            h = number_info.index(' ', j+1)
-
-            upvotes = number_info[j+1: h]
-
-            if upvotes is None:
-                upvotes =0
-
-            u.append(int(upvotes.replace(',', '')))
+                upvotes = number_info[j+1: h]
+                u.append(int(upvotes.replace(',', '')))
+            except:
+                u.append(0)
             #print(upvotes)
 
             try:
@@ -138,6 +137,7 @@ for url in urls:
 
 
 
+
            # print(comments)
 
 
@@ -146,7 +146,7 @@ for url in urls:
         # open a csv file with append, so old data will not be erased
 
 
-        with open(savefle, 'a') as csv_file:
+        with open(savefle, 'a', encoding="utf-8") as csv_file:
             writer = csv.writer(csv_file)
             for idx, item in enumerate(txt):
                 if idx in skip:
