@@ -74,7 +74,10 @@ for url_top in urls:
                 else:
                     print("Content error.......")
                 if len(secont_text[0].contents)>0:
-                   temp = temp + secont_text[0].contents[0];
+                   try:
+                       temp = temp + secont_text[0].contents[0];
+                   except:
+                       print("******FUCKING HELL!*****")
                 else:
                     print("Content error.......")
                 print(temp.replace('&quote' , '"').upper().strip('!"'))
