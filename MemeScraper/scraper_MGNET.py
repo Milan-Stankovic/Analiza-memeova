@@ -8,12 +8,17 @@ urls = []
 labels = []
 maxpage=20
 brojac=-1
+savefle="NANGRID.csv"
+
 with open('config_MGNET.txt') as f:
     content = f.readlines()
     for line in content:
         brojac+=1
         if brojac==0:
-            maxpage=int(line)
+            delici=line.split(',')
+            maxpage=int(delici[0])
+            savefle=delici[1]
+            savefle = savefle[:-1]
         else:
             line = line[:-1]
             parts = line.split(",")
@@ -86,7 +91,7 @@ for url_top in urls:
             temparr.append(int(coment_count[0].contents[0].strip().replace(',', '')))
             txt.append(temparr)
 
-        with open('test.csv', 'a', encoding="utf-8") as csv_file:
+        with open(savefle, 'a', encoding="utf-8") as csv_file:
             writer = csv.writer(csv_file)
             for idx, item in enumerate(txt):
                 writer.writerow(item)

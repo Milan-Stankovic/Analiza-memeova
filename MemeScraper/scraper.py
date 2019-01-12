@@ -8,12 +8,16 @@ urls = []
 labels = []
 maxpage=20
 brojac=-1
+savefile="NAN.csv"
 with open('config.txt') as f:
     content = f.readlines()
     for line in content:
         brojac+=1
         if brojac==0:
-            maxpage=int(line)
+            delici = line.split(',')
+            maxpage = int(delici[0])
+            savefle = delici[1]
+            savefle = savefle[:-1]
         else:
             line = line[:-1]
             parts = line.split(",")
@@ -35,7 +39,7 @@ for url in urls:
     for url in all_url:
 
 
-
+        print(url)
         # query the website and return the html to the variable ‘page’
         req = urllib2.Request(url, headers={'User-Agent' : "Magic Browser"})
         page = urllib2.urlopen( req )
@@ -142,7 +146,7 @@ for url in urls:
         # open a csv file with append, so old data will not be erased
 
 
-        with open('index1.csv', 'a') as csv_file:
+        with open(savefle, 'a') as csv_file:
             writer = csv.writer(csv_file)
             for idx, item in enumerate(txt):
                 if idx in skip:
