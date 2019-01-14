@@ -79,9 +79,10 @@ for url in urls:
 
             try:
                 meme_text = full_meme[ i+2: full_meme.index('|',i+1)-1]
+                txt.append(meme_text.replace('&quot', '"').upper())
             except:
-                skip.append(idx);
-            txt.append(meme_text.replace('&quote' , '"').upper())
+                skip.append(idx)
+
             #print(meme_text)
 
 
