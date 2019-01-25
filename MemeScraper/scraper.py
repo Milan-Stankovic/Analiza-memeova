@@ -71,7 +71,7 @@ for url in urls:
 
         txt = []
 
-        for full_meme in all_memes:
+        for idx, full_meme in enumerate(all_memes):
 
             full_meme = str(full_meme)
 
@@ -79,9 +79,10 @@ for url in urls:
 
             try:
                 meme_text = full_meme[ i+2: full_meme.index('|',i+1)-1]
+                txt.append(meme_text.replace('&quot', '"').upper())
             except:
-                continue
-            txt.append(meme_text.replace('&quote' , '"').upper())
+                skip.append(idx)
+
             #print(meme_text)
 
 
@@ -132,7 +133,7 @@ for url in urls:
                 comments = number_info[j + 1:h]
                 c.append(int(comments.replace(',', '')))
             except:
-                comments =0;
+                comments =0
                 c.append(int(comments))
 
 
