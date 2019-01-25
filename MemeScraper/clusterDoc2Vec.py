@@ -7,11 +7,16 @@ import collections
 import smart_open
 import random
 import csv
+import time
 from sklearn.cluster import KMeans
 from sklearn import metrics
 import pylab as pl
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
+import scipy
+#scipy.show_config()
+
+mode =0
 
 
 def read_corpus(fname):
@@ -22,15 +27,26 @@ def read_corpus(fname):
             yield gensim.models.doc2vec.TaggedDocument(gensim.utils.simple_preprocess(row[1]), [idx])
 
 
-text = list(read_corpus('memegenerator1.csv'))
-text.extend(list(read_corpus('memegenerator2.csv')))
+text = list(read_corpus('trainData.csv'))
+#text.extend(list(read_corpus('memegenerator2.csv')))
 
-model = gensim.models.doc2vec.Doc2Vec(vector_size=100, min_count=2, epochs=40, workers=7)
+model = gensim.models.doc2vec.Doc2Vec(vector_size=300, min_count=2,epochs=40, workers=2, seed=2324)
 
 model.build_vocab(text)
 
 #%time
-model.train(text, total_examples=model.corpus_count, epochs=model.epochs)
+
+
+if mode == 1 :
+    print("Training starting ")
+    start = time.time()
+    model.train(text, total_examples=model.corpus_count, epochs=model.epochs)
+    end = time.time()
+    print("Training end after: ")
+    print(end-start)
+    model.save('doc2VecWeights')
+else :
+    model = gensim.models.doc2vec.load('doc2VecWeights')
 
 
 kmeans_model = KMeans(n_clusters=15, init='k-means++', max_iter=100)
@@ -63,3 +79,4 @@ plt.show()
 #result = model.docvecs.most_similar([test], topn=len(model.docvecs))
 
 #print(result)
+
