@@ -2,6 +2,7 @@ import warnings
 warnings.filterwarnings(action='ignore', category=UserWarning, module='gensim')
 warnings.filterwarnings(action='ignore', category=DeprecationWarning, module='sklearn')
 import gensim
+from gensim.models.doc2vec import Doc2Vec, TaggedDocument
 import os
 import collections
 import smart_open
@@ -13,6 +14,7 @@ from sklearn import metrics
 import pylab as pl
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
+from gensim.test.utils import get_tmpfile
 import scipy
 #scipy.show_config()
 
@@ -42,17 +44,20 @@ if mode == 1 :
     start = time.time()
     model.train(text, total_examples=model.corpus_count, epochs=model.epochs)
     end = time.time()
-    print("Training end after: ")
-    print(end-start)
     model.save('doc2VecWeights')
+   # model.delete_temporary_training_data(keep_doctags_vectors=True, keep_inference=True)
+    print("Training finished and saved after: ")
+    print(end - start)
 else :
-    model = gensim.models.doc2vec.load('doc2VecWeights')
+    model = Doc2Vec.load('doc2VecWeights')
 
 
-kmeans_model = KMeans(n_clusters=15, init='k-means++', max_iter=100)
+
+kmeans_model = KMeans(n_clusters=15, init='k-means++', max_iter=500, n_init=25, precompute_distances=True, n_jobs=-1, algorithm="auto")
 X = kmeans_model.fit(model.docvecs.vectors_docs)
 labels=kmeans_model.labels_.tolist()
 
+print(labels)
 
 l = kmeans_model.fit_predict(model.docvecs.vectors_docs)
 pca = PCA(n_components=2).fit(model.docvecs.vectors_docs)
