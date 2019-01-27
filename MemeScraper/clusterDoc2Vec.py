@@ -140,7 +140,7 @@ for i in range(0,numberOfTypes):
     for y in toBeRemoved[i] :
        result[i].remove(y)
 
-
+#print(transposedInd)
 
 #prvi je meme drugi je koji je to cluster
 paroviDict ={}
@@ -148,14 +148,81 @@ paroviDict ={}
 print(result)
 print(toBeRemoved)
 
+unique = result
+
+for i in range(0,numberOfTypes):
+
+    print("Ulazak u glavni for : " + str(i))
+    print("UNIEQUE SU : " + str(unique[i]))
+    tempUn = unique[i].copy()
+    for cluster in tempUn:        #sve unique odmah dodajem
+        print("TRAZIM UNIQUE : " +str(cluster))
+        for f in range(0, numberOfTypes):   #nije transponovano pa prolazim ovako kroz sve nizove i gledam
+            print("F JE : " + str(f))
+            print( "ORIGINAL IND JE :" + str(origInd[f]))
+            print("ORIGINAL IND NA I JE :" + str(origInd[f][i]))
+            if origInd[f][i]==cluster :
+                if f not in paroviDict :
+                    print("DODAJEM UNIQE : "+ str(f)+" vrednost clustera : " + str(cluster))
+                    paroviDict[f] = cluster #meme numb = cluster num
+                    for j in range(0, numberOfTypes): #Izbacujem dodat cluster iz unique
+                        if cluster in unique[j]:
+                            unique[j].remove(cluster)
+                        if cluster in toBeRemoved[j]:
+                            toBeRemoved[j].remove(cluster)
+                        if cluster in origInd[j] :
+                            [-1 if x==cluster else x for x in origInd[j]] # menjam uzete vrednosti na -1
+                    break
+
+
+    tempRemove = toBeRemoved[i].copy()
+    print("TO BE REMOVED SU : " + str(toBeRemoved[i]))
+    for conflictingCluster in tempRemove :
+        print("KONFLIKTNI CLUSTER JE : "+str(conflictingCluster))
+        indexes = []
+        indexes.clear()
+
+        conflictingMaxValues = []
+        conflictingMaxValues.clear()
+        for h in range(0, numberOfTypes):   #nije transponovano pa prolazim ovako kroz sve nizove i gledam
+            if origInd[h][i] == conflictingCluster: # trazim indekse
+                if h not in paroviDict :
+                    indexes.append(h)
+                    conflictingMaxValues.append(counts[h][conflictingCluster]) #same vrednosti
+        print("U konfliktu su max vrednosti : " + str(conflictingMaxValues))
+        if len(conflictingMaxValues)> 0:
+            index = conflictingMaxValues.index(max(conflictingMaxValues))
+            print("DODAJEM KONFLITNAN : " + str(indexes[index]) + " vrednost clustera : " + str(conflictingCluster))
+            paroviDict[indexes[index]] = conflictingCluster
+
+            for j in range(0, numberOfTypes):  # Izbacujem dodat cluster iz unique
+                if conflictingCluster in unique[j]:
+                    unique[j].remove(conflictingCluster)
+                if conflictingCluster in toBeRemoved[j]:
+                    toBeRemoved[j].remove(conflictingCluster)
+                if conflictingCluster in origInd[j]:
+                    [-1 if x == conflictingCluster else x for x in origInd[j]]  # menjam uzete vrednosti na -1
+
+    print("ZA SADA : " + str(paroviDict))
+
+
+
+
+
+
+#izbaciti redove koji su dobili meme
+
+
+'''''
+
 for i in range(0,numberOfTypes):
 
     yay = result[i].copy()
 
     for cluster in yay:
         meme = transposedInd[i].index(cluster)
-      # print("Un : "+str(meme))
-      # print("un : "+str(cluster))
+        #print("Un : "+str(meme))
+        #print("un : "+str(cluster))
        #paroviDict[meme] = cluster
         paroviDict[cluster] = meme
         #print("Dodao u : " + str(cluster) + " broj " + str(meme))
@@ -194,7 +261,7 @@ for i in range(0,numberOfTypes):
                 toBeRemoved[h].remove(conflictingCluster)
 
 
-
+'''''
 
 
 print("-------------------------------------------")
