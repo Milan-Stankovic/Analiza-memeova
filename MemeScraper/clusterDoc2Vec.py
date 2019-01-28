@@ -23,6 +23,16 @@ import numpy
 mode =0
 numberOfTypes =15
 numberOfMemes = 1244
+numberOfTestMemes = 311
+
+def read_Test(fname):
+    inputfile = csv.reader(open(fname, 'r', encoding="utf-8"))
+
+    num =-1
+    for idx, row in enumerate(inputfile):
+        if idx %2 ==0:
+            num =num+1
+            yield gensim.utils.simple_preprocess(row[1])
 
 
 def read_corpus(fname):
@@ -303,6 +313,52 @@ centroids = kmeans_model.cluster_centers_
 centroidpoint = pca.transform(centroids)
 plt.scatter(centroidpoint[:, 0], centroidpoint[:, 1], marker='^', s=150, c='#000000')
 plt.show()
+
+
+testText = list(read_Test('testData.csv'))
+
+#print(len(testText))
+
+test = []
+
+
+
+for idx, txt in enumerate(testText):
+    test.append(model.infer_vector(txt))
+
+predictedClusters =kmeans_model.predict(test)
+#print(predictedClusters)
+
+
+testCount = []
+
+num =-1
+
+for i in range(0, len(testText)):
+
+    if i%numberOfTestMemes == 0:
+        testCount.append(0)
+        num=num+1
+    if predictedClusters[i]== paroviDict[num]:
+        testCount[num] = testCount[num]+1
+
+#print(testCount)
+
+print("TEST")
+print("---------------------------------------------------")
+print("TEST")
+
+successTest = []
+
+for i in range(0, numberOfTypes):
+    successTest.append(testCount[i]*100/numberOfTestMemes)
+    print(str(i) + ". Test meme success rate is : " + str(successTest[i]) + " %")
+
+
+
+
+
+
 
 
 #test = model.infer_vector(['Hide', 'the', 'pain','Grba','and', 'git', 'good'])
