@@ -86,7 +86,7 @@ vals =[]
 for i in range(0,numberOfTypes):
     vals.append([])
 
-print()
+#print()
 
 for idx,item in enumerate(labels):
     if idx%numberOfMemes ==0 :
@@ -114,10 +114,10 @@ for i in range(0,numberOfTypes):
     ind.append(counts[i].index(max(counts[i])))
     origInd.append(numpy.argsort(counts[i])[::-1][:numberOfTypes])
 
-print(counts)
+#print(counts)
 #print(maxs)
 #print(ind)
-print(origInd)
+#print(origInd)
 
 
 #New kul function
@@ -145,25 +145,25 @@ for i in range(0,numberOfTypes):
 #prvi je meme drugi je koji je to cluster
 paroviDict ={}
 
-print(result)
-print(toBeRemoved)
+#print(result)
+#print(toBeRemoved)
 
 unique = result
 
 for i in range(0,numberOfTypes):
 
-    print("Ulazak u glavni for : " + str(i))
-    print("UNIEQUE SU : " + str(unique[i]))
+   # print("Ulazak u glavni for : " + str(i))
+   # print("UNIEQUE SU : " + str(unique[i]))
     tempUn = unique[i].copy()
     for cluster in tempUn:        #sve unique odmah dodajem
-        print("TRAZIM UNIQUE : " +str(cluster))
+       # print("TRAZIM UNIQUE : " +str(cluster))
         for f in range(0, numberOfTypes):   #nije transponovano pa prolazim ovako kroz sve nizove i gledam
-            print("F JE : " + str(f))
-            print( "ORIGINAL IND JE :" + str(origInd[f]))
-            print("ORIGINAL IND NA I JE :" + str(origInd[f][i]))
+           # print("F JE : " + str(f))
+           # print( "ORIGINAL IND JE :" + str(origInd[f]))
+          #  print("ORIGINAL IND NA I JE :" + str(origInd[f][i]))
             if origInd[f][i]==cluster :
                 if f not in paroviDict :
-                    print("DODAJEM UNIQE : "+ str(f)+" vrednost clustera : " + str(cluster))
+                 #   print("DODAJEM UNIQE : "+ str(f)+" vrednost clustera : " + str(cluster))
                     paroviDict[f] = cluster #meme numb = cluster num
                     for j in range(0, numberOfTypes): #Izbacujem dodat cluster iz unique
                         if cluster in unique[j]:
@@ -176,9 +176,9 @@ for i in range(0,numberOfTypes):
 
 
     tempRemove = toBeRemoved[i].copy()
-    print("TO BE REMOVED SU : " + str(toBeRemoved[i]))
+   # print("TO BE REMOVED SU : " + str(toBeRemoved[i]))
     for conflictingCluster in tempRemove :
-        print("KONFLIKTNI CLUSTER JE : "+str(conflictingCluster))
+        #print("KONFLIKTNI CLUSTER JE : "+str(conflictingCluster))
         indexes = []
         indexes.clear()
 
@@ -189,10 +189,10 @@ for i in range(0,numberOfTypes):
                 if h not in paroviDict :
                     indexes.append(h)
                     conflictingMaxValues.append(counts[h][conflictingCluster]) #same vrednosti
-        print("U konfliktu su max vrednosti : " + str(conflictingMaxValues))
+       # print("U konfliktu su max vrednosti : " + str(conflictingMaxValues))
         if len(conflictingMaxValues)> 0:
             index = conflictingMaxValues.index(max(conflictingMaxValues))
-            print("DODAJEM KONFLITNAN : " + str(indexes[index]) + " vrednost clustera : " + str(conflictingCluster))
+          #  print("DODAJEM KONFLITNAN : " + str(indexes[index]) + " vrednost clustera : " + str(conflictingCluster))
             paroviDict[indexes[index]] = conflictingCluster
 
             for j in range(0, numberOfTypes):  # Izbacujem dodat cluster iz unique
@@ -203,14 +203,23 @@ for i in range(0,numberOfTypes):
                 if conflictingCluster in origInd[j]:
                     [-1 if x == conflictingCluster else x for x in origInd[j]]  # menjam uzete vrednosti na -1
 
-    print("ZA SADA : " + str(paroviDict))
+  #  print("ZA SADA : " + str(paroviDict))
 
 
+#print("------------------------------")
+#print(counts)
+
+#meme je key cluster je value
+
+success = []
+
+for key, value in sorted(paroviDict.items()) :
+    #print(key)
+    success.append(counts[key][value]*100/numberOfMemes);
 
 
-
-
-#izbaciti redove koji su dobili meme
+for idx, rate in enumerate(success) :
+    print(str(idx) +". meme success rate is : " + str(rate) + " %")
 
 
 '''''
@@ -264,17 +273,17 @@ for i in range(0,numberOfTypes):
 '''''
 
 
-print("-------------------------------------------")
-print(paroviDict)
-print(len(paroviDict))
+#print("-------------------------------------------")
+#print(paroviDict)
+#print(len(paroviDict))
+
+# meme key cluster value
 
 
 
 
 
 
-
-'''''
 
 pca = PCA(n_components=2).fit(model.docvecs.vectors_docs)
 datapoint = pca.transform(model.docvecs.vectors_docs)
@@ -300,4 +309,3 @@ plt.show()
 #result = model.docvecs.most_similar([test], topn=len(model.docvecs))
 
 #print(result)
-'''
