@@ -70,10 +70,16 @@ def graph(dataSet, tipovi, ignorisiNule, sentimentPart):
         y=izvuciKolonu(arr, sentimentPart)
         x=convert(x)
         y=convert(y)
-        print(x)
-        print(y)
-        plt.bar(x, y)
+        #print(x)
+        #print(y)
+        fig = plt.figure()
+
+        ax = fig.add_subplot(111)
+        ax.bar(x, y)
         axes = plt.gca()
+        ax.set_title(tipovi[i].replace('_', ' '), fontweight='bold')
+        ax.set_ylabel('Sentiment')
+        ax.set_xlabel('Number of likes')
         #axes.set_ylim([max(y), min(y)])
         #axes.set_xlim([min(x), max(x)])
         plt.show()
@@ -195,8 +201,8 @@ tips=[
 '''
 read_Data('meme2sentiment.csv', arr1)
 #read_DataRelevant('meme1sentiment.csv', arr1, 100, 3)
-#graph(arr1, tips, False, 5)#3neg 5pos
+graph(arr1, tips, True, 5)#3neg 5pos
 
-graphBoxPlot(arr1, tips, False, 5)#3neg 5pos
+#graphBoxPlot(arr1, tips, False, 5)#3neg 5pos
 #graphMemeSentCount(arr1, tips)
 #graphMemeSentCountWithNeutral(arr1, tips)
