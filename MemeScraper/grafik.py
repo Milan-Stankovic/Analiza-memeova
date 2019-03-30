@@ -45,7 +45,7 @@ def read_DataRelevant(fname, arr, noRelevant, column):#column=3 => upvotes colum
 def skrnavstina(arr):
     for i in range(len(arr)):
         for j in range(len(arr)):
-            if arr[i][0] > arr[j][0]:
+            if int(arr[i][1]) > int(arr[j][1]):
                 arr[i], arr[j] = arr[j], arr[i]
 
 def izvuciKolonu(arr, l):
@@ -56,7 +56,7 @@ def izvuciKolonu(arr, l):
 def izvuciTip(arr, tip, kolonaZaPlotovanje, bul):
     temp=[]
     for i in range(len(arr)):
-        if arr[i][0]==tip and (bul or float(arr[i][kolonaZaPlotovanje]) > 0.05):
+        if arr[i][0]==tip and (bul or float(arr[i][kolonaZaPlotovanje]) > 0.25):
            # print(arr[i])
             temp.append(arr[i])
     return temp
@@ -64,10 +64,12 @@ def graph(dataSet, tipovi, ignorisiNule, sentimentPart):
     for i in range(len(tipovi)):
         print("Graphing for: " + tipovi[i])
         arr = izvuciTip(dataSet, tipovi[i], sentimentPart, ignorisiNule)
-        #skrnavstina(arr)
+        skrnavstina(arr)
         printArr(arr)
         x=izvuciKolonu(arr, 1)
         y=izvuciKolonu(arr, sentimentPart)
+        x=convert(x)
+        y=convert(y)
         print(x)
         print(y)
         plt.bar(x, y)
@@ -75,11 +77,21 @@ def graph(dataSet, tipovi, ignorisiNule, sentimentPart):
         #axes.set_ylim([max(y), min(y)])
         #axes.set_xlim([min(x), max(x)])
         plt.show()
+def convert(arr):
+    ret=[]
+    for i in range(len(arr)):
+        ret.append(float(arr[i]))
+    return ret
+
 def printArr(arr):
     for i in range(len(arr)):
         print(arr[i])
+
+
 def graphByInterval(dataSet, tipovi, ignorisiNule):
     print()
+
+
 def getMemeSentCount(dataSet, sent):#sent 0-neg 1-neu 2-pos 3-compound
     ret=0
     for i in range(len(dataSet)):
@@ -87,17 +99,49 @@ def getMemeSentCount(dataSet, sent):#sent 0-neg 1-neu 2-pos 3-compound
         if getMaxArrIdx(dataSet[i])==sent:
             ret=ret+1
     return ret
+
+
+def getMemeSentCount2(dataSet, sent):#sent 0-neg 1-neu 2-pos 3-compound
+    ret=0
+    for i in range(len(dataSet)):
+        print(str(dataSet[i])+'---'+str(getMaxArrIdx2(dataSet[i])))
+        if getMaxArrIdx2(dataSet[i])==sent:
+            ret=ret+1
+    return ret
+
+def getMaxArrIdx2(arr):
+    max=3;
+    for i in range(3,len(arr)-1):
+        if i==4:
+            continue
+        if float(arr[i]) > float(arr[max]):
+            max=i
+    if arr[3]==0 and arr[5]==0:
+        return -1
+    return max-3
+
 def getMaxArrIdx(arr):
     max=3;
     for i in range(3,len(arr)-1):
         if float(arr[i]) > float(arr[max]):
             max=i
     return max-3
-def graphMemeSentCount(wholeDS, types):
+
+def graphMemeSentCountWithNeutral(wholeDS, types):
     for i in range(len([0,1,2])):
         count=[]
         for j in range(len(types)):
             count.append(getMemeSentCount(izvuciTip(wholeDS, types[j], -1, True), i))
+        print('Ploting bar graph for sent:'+str(i))
+        plt.bar(types, count)
+        plt.show()
+
+
+def graphMemeSentCount(wholeDS, types):
+    for i in range(len([0,1,2])):
+        count=[]
+        for j in range(len(types)):
+            count.append(getMemeSentCount2(izvuciTip(wholeDS, types[j], -1, True), i))
         print('Ploting bar graph for sent:'+str(i))
         plt.bar(types, count)
         plt.show()
@@ -120,7 +164,12 @@ tips=[
     'WHAT_IF_I_TELL_YOU'
 ]
 
-read_Data('meme1sentiment.csv', arr1)
+'''
+
+
+'''
+read_Data('meme2sentiment.csv', arr1)
 #read_DataRelevant('meme1sentiment.csv', arr1, 100, 3)
-#graph(arr1, tips, False, 3)#3neg 5pos
-graphMemeSentCount(arr1, tips)
+graph(arr1, tips, False, 5)#3neg 5pos
+#graphMemeSentCount(arr1, tips)
+#graphMemeSentCountWithNeutral(arr1, tips)
