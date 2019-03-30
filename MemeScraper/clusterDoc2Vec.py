@@ -356,10 +356,10 @@ for i in range(0, len(testText)):
 #print("TEST")
 
 successTest = []
-
+print(sum(testCount)*100/numberOfTestMemes)
 for i in range(0, numberOfTypes):
     successTest.append(testCount[i]*100/numberOfTestMemes)
-    #print(str(i) + ". Test meme success rate is : " + str(successTest[i]) + " %")
+    print(str(i) + ". Test meme success rate is : " + str(successTest[i]) + " %")
 
 
 

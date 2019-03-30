@@ -11,6 +11,8 @@ from pprint import pprint
 from itertools import chain
 import sys
 import warnings
+import csv as csv
+import heapq
 
 if not sys.warnoptions:
     warnings.simplefilter("ignore")
@@ -21,9 +23,18 @@ with open('stopWords.txt') as text_file:
         stopWordsList.append(line.rstrip())
 
 print(stopWordsList)
+def read_Test(fname):
+    inputfile = csv.reader(open(fname, 'r', encoding="utf-8"))
 
+    num =-1
+    for idx, row in enumerate(inputfile):
+        if idx %2 ==0:
+            num =num+1
+            yield gensim.utils.simple_preprocess(row[1])
+memeNums = []
 stemmer = stemmer('english')
 numberOfMemes = 1244
+numberOfTestMemes = 311
 for param1 in range(3,4):
     for param2 in range(15,16):
         for param3 in range(3, 4):
@@ -82,10 +93,12 @@ for param1 in range(3,4):
                     #print("SHIT")
                     x=0
                     scorem=0
+
                     for index1, score in lda_model[bow_corpus[j]]:
                         if score>scorem:
                             scorem=score
                             x=index1
+
                     #print("Topic: {} --- Score: {}".format(max, scorem))
                     maxs[x]=maxs[x]+1
                 #print(str(i)+"->"+str(maxs)+"->"+str(maxs.index(max(maxs))))
@@ -102,7 +115,8 @@ for param1 in range(3,4):
                 maxs.append(max(counts[i]))
                 ind.append(counts[i].index(max(counts[i])))
                 origInd.append(np.argsort(counts[i])[::-1][:15])
-
+            for i in range(len(counts)):
+                print(counts[i])
             #for i in range(len(ind)):
                 #print(ind[i])
             #for i in range(len(origInd)):
@@ -204,10 +218,61 @@ for param1 in range(3,4):
             for key, value in sorted(paroviDict.items()) :
                 print("meme" + str(key) + "is in cluster: "+str(counts[key].index(counts[key][value])))
                 success.append(counts[key][value]*100/numberOfMemes);
+                memeNums.append(str(counts[key].index(counts[key][value])))
 
             print("Average succes: "+str(sum(success)/len(success))+ " %")
             for idx, rate in enumerate(success) :
                 print(str(idx) +". meme success rate is : " + str(rate) + " %")
+
+            processed_docs = []
+            test = pd.read_csv('testDataNew.csv', error_bad_lines=False)
+            testBow = []
+            test = test[['TEXT']]
+            test['index'] = test.index
+            testText = test
+
+            print("Processing test memes...")
+            for iterator in range(len(testText)):
+                doc_sample = testText[testText['index'] == iterator].values[0][0]
+                #print(doc_sample)
+                #print("Procesing meme" + str(iterator))
+                #temp = preprocess(doc_sample)
+                #processed_docs.append(temp)
+                testBow.append(dictionary.doc2bow(preprocess(doc_sample)))
+            #print("HELLO")
+            start=0
+            end=numberOfTestMemes-1
+            testCount = []
+            for j in range(0,15):
+                testCount.append(0)
+                for i in range(start, end):
+                    x = 0
+                    scorem = 0
+                    scoreList = []
+                    #print(lda_model[testBow[i]])
+                    for index1, score in lda_model[testBow[i]]:
+
+                        #print(score)
+                        scoreList.append(score)
+                        if score > scorem:
+                            scorem = score
+                            x = index1
+
+                    maxList = heapq.nlargest(3, range(len(scoreList)), key=scoreList.__getitem__)
+
+                    #+print("Procesing meme in group: " + str(j) + "no: " + str(i)+"Guessed grouo: "+str(x)+". Real group:"+str(memeNums[j]))
+                    if maxList[0] == int(memeNums[j]) or maxList[1] == int(memeNums[j]) or maxList[2] == int(memeNums[j]):# or maxList[3] == int(memeNums[j]):
+                        #print("NASO SAM NEKI DA VALJA")
+                        testCount[j]=testCount[j]+1
+                start=start+numberOfTestMemes
+                end=end+numberOfTestMemes
+            successTest = []
+            print("Average succes: " + str(sum(testCount) * 100 / numberOfTestMemes/15) + " %")
+            for i in range(0, 15):
+                successTest.append(testCount[i] * 100 / numberOfTestMemes)
+                print(str(i) + ". Test meme success rate is : " + str(successTest[i]) + " %")
+
+
 '''
 lda_corpus = lda_model[bow_corpus]
 scores = list(chain(*[[score for topic_id,score in topic] \
