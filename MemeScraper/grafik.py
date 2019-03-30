@@ -77,6 +77,31 @@ def graph(dataSet, tipovi, ignorisiNule, sentimentPart):
         #axes.set_ylim([max(y), min(y)])
         #axes.set_xlim([min(x), max(x)])
         plt.show()
+
+def graphBoxPlot(dataSet, tipovi, ignorisiNule, sentimentPart):
+    for i in range(len(tipovi)):
+        print("Graphing for: " + tipovi[i])
+        arr = izvuciTip(dataSet, tipovi[i], sentimentPart, ignorisiNule)
+        skrnavstina(arr)
+       # printArr(arr)
+        #x=izvuciKolonu(arr, 1)
+        y=izvuciKolonu(arr, sentimentPart)
+        #x=convert(x)
+        y=convert(y)
+        #print(x)
+        #print(y)
+
+        fig=plt.figure()
+
+        ax = fig.add_subplot(111)
+        ax.boxplot(y)
+        ax.set_title(tipovi[i].replace('_', ' '), fontweight='bold')
+        ax.set_ylabel('Sentiment')
+        #axes = plt.gca()
+        #axes.set_ylim([max(y), min(y)])
+        #axes.set_xlim([min(x), max(x)])
+        plt.show()
+
 def convert(arr):
     ret=[]
     for i in range(len(arr)):
@@ -170,6 +195,8 @@ tips=[
 '''
 read_Data('meme2sentiment.csv', arr1)
 #read_DataRelevant('meme1sentiment.csv', arr1, 100, 3)
-graph(arr1, tips, False, 5)#3neg 5pos
+#graph(arr1, tips, False, 5)#3neg 5pos
+
+graphBoxPlot(arr1, tips, False, 5)#3neg 5pos
 #graphMemeSentCount(arr1, tips)
 #graphMemeSentCountWithNeutral(arr1, tips)
