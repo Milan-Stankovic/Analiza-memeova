@@ -34,7 +34,9 @@ def read_Test(fname):
 memeNums = []
 stemmer = stemmer('english')
 numberOfMemes = 1244
-numberOfTestMemes = 311
+numberOfTestMemes = 585
+testPath='meme1sentiment.csv'
+trainPath='trainDataNew.csv'
 for param1 in range(3,4):
     for param2 in range(15,16):
         for param3 in range(3, 4):
@@ -52,7 +54,7 @@ for param1 in range(3,4):
                 return result
 
             processed_docs=[]
-            data = pd.read_csv('trainDataNew.csv', error_bad_lines=False)
+            data = pd.read_csv(trainPath, error_bad_lines=False)
 
             data_text = data[['TEXT']]
             data_text['index'] = data_text.index
@@ -225,7 +227,7 @@ for param1 in range(3,4):
                 print(str(idx) +". meme success rate is : " + str(rate) + " %")
 
             processed_docs = []
-            test = pd.read_csv('testDataNew.csv', error_bad_lines=False)
+            test = pd.read_csv(testPath, error_bad_lines=False)
             testBow = []
             test = test[['TEXT']]
             test['index'] = test.index
@@ -258,10 +260,10 @@ for param1 in range(3,4):
                             scorem = score
                             x = index1
 
-                    maxList = heapq.nlargest(3, range(len(scoreList)), key=scoreList.__getitem__)
+                    maxList = heapq.nlargest(1, range(len(scoreList)), key=scoreList.__getitem__)
 
                     #+print("Procesing meme in group: " + str(j) + "no: " + str(i)+"Guessed grouo: "+str(x)+". Real group:"+str(memeNums[j]))
-                    if maxList[0] == int(memeNums[j]) or maxList[1] == int(memeNums[j]) or maxList[2] == int(memeNums[j]):# or maxList[3] == int(memeNums[j]):
+                    if maxList[0] == int(memeNums[j]):# or maxList[1] == int(memeNums[j]) or maxList[2] == int(memeNums[j]):# or maxList[3] == int(memeNums[j]):
                         #print("NASO SAM NEKI DA VALJA")
                         testCount[j]=testCount[j]+1
                 start=start+numberOfTestMemes
