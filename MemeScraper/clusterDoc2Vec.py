@@ -46,8 +46,8 @@ def read_corpus(fname):
 
 mode = 0
 numberOfTypes = 15
-numberOfMemes = 1244
-numberOfTestMemes = 311
+numberOfMemes = 1244  #1556
+numberOfTestMemes = 313
 
 text = list(read_corpus('trainData.csv'))
 #text.extend(list(read_corpus('memegenerator2.csv')))
@@ -341,7 +341,14 @@ testCount = []
 
 num =-1
 
+
+
 for i in range(0, len(testText)):
+
+  #  print (predictedClusters[i])
+    #print (paroviDict[num])
+    #print (i)
+  #  print (num)
 
     if i%numberOfTestMemes == 0:
         testCount.append(0)
@@ -356,7 +363,7 @@ for i in range(0, len(testText)):
 #print("TEST")
 
 successTest = []
-print(sum(testCount)*100/numberOfTestMemes)
+print(sum(testCount)*100/(numberOfTestMemes*15))
 for i in range(0, numberOfTypes):
     successTest.append(testCount[i]*100/numberOfTestMemes)
     print(str(i) + ". Test meme success rate is : " + str(successTest[i]) + " %")

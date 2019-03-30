@@ -8,7 +8,7 @@ urls = []
 labels = []
 maxpage=20
 brojac=-1
-savefile="NAN.csv"
+savefile="imgFileMemes1.csv"
 with open('config.txt') as f:
     content = f.readlines()
     for line in content:
@@ -31,7 +31,7 @@ for url in urls:
     #url = url+1
     all_url = []
 
-    for i in range(0,maxpage) :
+    for i in range(1,maxpage+1) :
         all_url.append(url+str(i))
 
 
