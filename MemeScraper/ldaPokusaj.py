@@ -34,11 +34,11 @@ def read_Test(fname):
 memeNums = []
 stemmer = stemmer('english')
 numberOfMemes = 1244
-numberOfTestMemes = 585
-testPath='meme1sentiment.csv'
+numberOfTestMemes = 312
+testPath='testDataNew.csv'
 trainPath='trainDataNew.csv'
 for param1 in range(3,4):
-    for param2 in range(15,16):
+    for param2 in range(25,26):
         for param3 in range(3, 4):
             print("Stop word length:" + str(param1)+". Forget triger size:" + str(param2)+". Epochs:" + str(param3))
 
@@ -48,8 +48,7 @@ for param1 in range(3,4):
             def preprocess(text):
                 result = []
                 for token in gensim.utils.simple_preprocess(text):
-                    if token not in stopWordsList:
-                    #if len(token)>2:
+                    if token not in stopWordsList and len(token)>1:
                         result.append(lemmatize_stemming(token))
                 return result
 
@@ -228,16 +227,16 @@ for param1 in range(3,4):
 
             processed_docs = []
             test = pd.read_csv(testPath, error_bad_lines=False)
+            #print(test)
             testBow = []
             test = test[['TEXT']]
             test['index'] = test.index
             testText = test
 
-            print("Processing test memes...")
             for iterator in range(len(testText)):
                 doc_sample = testText[testText['index'] == iterator].values[0][0]
                 #print(doc_sample)
-                #print("Procesing meme" + str(iterator))
+                #print("Procesing meme" + str(iterator)+"---"+str(testText[testText['index'] == iterator].values[0][0]))
                 #temp = preprocess(doc_sample)
                 #processed_docs.append(temp)
                 testBow.append(dictionary.doc2bow(preprocess(doc_sample)))
@@ -248,6 +247,7 @@ for param1 in range(3,4):
             for j in range(0,15):
                 testCount.append(0)
                 for i in range(start, end):
+                    #print(i)
                     x = 0
                     scorem = 0
                     scoreList = []
