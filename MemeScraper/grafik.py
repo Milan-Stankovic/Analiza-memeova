@@ -204,7 +204,7 @@ read_Data('meme2sentiment.csv', arr1)
 for i in range(len(arr1)):
     print(arr1[i])
 #read_DataRelevant('meme1sentiment.csv', arr1, 100, 3)
-graph(arr1, tips, True, 5)#3neg 5pos
+graph(arr1, tips, False, 5)#3neg 5pos
 
 #graphBoxPlot(arr1, tips, False, 5)#3neg 5pos
 #graphMemeSentCount(arr1, tips)

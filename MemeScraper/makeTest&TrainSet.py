@@ -221,8 +221,8 @@ uniqueLables=[ii for n,ii in enumerate(labels) if ii not in labels[:n]]
 
 
 
-for idx, meme in enumerate(uniqueLables) :
-    saveFile(meme, listAll[idx])
+#for idx, meme in enumerate(uniqueLables) :
+ #   saveFile(meme, listAll[idx])
 
 
 
