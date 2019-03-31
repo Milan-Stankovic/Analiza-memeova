@@ -61,7 +61,7 @@ def izvuciTip(arr, tip, kolonaZaPlotovanje, bul):
             temp.append(arr[i])
     return temp
 def graph(dataSet, tipovi, ignorisiNule, sentimentPart):
-    for i in range(len(tipovi)):
+    for i in range(12,13):#range(len(tipovi)):
         print("Graphing for: " + tipovi[i])
         arr = izvuciTip(dataSet, tipovi[i], sentimentPart, ignorisiNule)
         skrnavstina(arr)
@@ -200,6 +200,9 @@ tips=[
 
 '''
 read_Data('meme2sentiment.csv', arr1)
+
+for i in range(len(arr1)):
+    print(arr1[i])
 #read_DataRelevant('meme1sentiment.csv', arr1, 100, 3)
 graph(arr1, tips, True, 5)#3neg 5pos
 
