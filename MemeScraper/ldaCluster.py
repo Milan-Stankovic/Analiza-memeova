@@ -67,35 +67,9 @@ for i in range(0,15):
             if score>scorem:
                 scorem=score
                 x=index1
-        #print("Topic: {} --- Score: {}".format(max, scorem))
+        print("Topic: {} --- Score: {}".format(max, scorem))
         maxs[x]=maxs[x]+1
     print(str(i)+"->"+str(maxs)+"->"+str(maxs.index(max(maxs))-1));
     maxr=maxr+585
     minr=minr+585
 
-'''
-lda_corpus = lda_model[bow_corpus]
-scores = list(chain(*[[score for topic_id,score in topic] \
-                      for topic in [doc for doc in lda_corpus]]))
-threshold = sum(scores)/len(scores)
-print("TRESHOLD:"+str(threshold))
-cluster=[[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]]
-cluster[1]= [j for i,j in zip(lda_corpus,bow_corpus) if i[0][1] > threshold]
-cluster[2] = [j for i,j in zip(lda_corpus,bow_corpus) if i[1][1] > threshold]
-cluster[3] = [j for i,j in zip(lda_corpus,bow_corpus) if i[2][1] > threshold]
-cluster[4] = [j for i,j in zip(lda_corpus,bow_corpus) if i[3][1] > threshold]
-cluster[5] = [j for i,j in zip(lda_corpus,bow_corpus) if i[4][1] > threshold]
-cluster[6] = [j for i,j in zip(lda_corpus,bow_corpus) if i[5][1] > threshold]
-cluster[7] = [j for i,j in zip(lda_corpus,bow_corpus) if i[6][1] > threshold]
-cluster[8] = [j for i,j in zip(lda_corpus,bow_corpus) if i[7][1] > threshold]
-cluster[9] = [j for i,j in zip(lda_corpus,bow_corpus) if i[8][1] > threshold]
-cluster[10] = [j for i,j in zip(lda_corpus,bow_corpus) if i[9][1] > threshold]
-cluster[11] = [j for i,j in zip(lda_corpus,bow_corpus) if i[10][1] > threshold]
-cluster[12] = [j for i,j in zip(lda_corpus,bow_corpus) if i[11][1] > threshold]
-cluster[13] = [j for i,j in zip(lda_corpus,bow_corpus) if i[12][1] > threshold]
-cluster[14] = [j for i,j in zip(lda_corpus,bow_corpus) if i[13][1] > threshold]
-cluster[15] = [j for i,j in zip(lda_corpus,bow_corpus) if i[14][1] > threshold]
-
-for i in range(len(cluster)):
-    print(len(cluster[i]))
-'''
