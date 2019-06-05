@@ -39,19 +39,33 @@ def extractType(tokens, type, mode):
 
     return retVal
 
+def extractNonPunctuaction(tokens):
+    retVal = []
+    for idx in range(0, len(tokens)):
+        if tokens[idx][1] != "''" and tokens[idx][1][0] != 'N' and tokens[idx][1][0] != 'V' and tokens[idx][1][0] != '.' and tokens[idx][1][0] != ':' and tokens[idx][1] != '``' and tokens[idx][1][0] != ',':
+            temp = []
+            temp.append(idx)
+            temp.append(tokens[idx][0])
+            retVal.append(temp)
+
+    return retVal
+
 def splitEntry(entry, splits, firstWordsIgnore):
     retVal = []
     frontSet = []
     backSet = []
-
+    tempR = 0
     tokens = nltk.word_tokenize(text)
     posTokens = nltk.pos_tag(tokens)
 
     verbs = extractType(posTokens, 'V', True);
     nouns = extractType(posTokens, 'N', True);
-    nonPunctuation = extractType(posTokens, '.', False);
+    nonPunctuation = extractNonPunctuaction(posTokens);
 
     print("--------------------------------------------------------------------------------------------------------------")
+    print("POS: ", posTokens)
+    print(entry)
+    #print("Tokens: ", tokens)
     print("Verbs: ", verbs)
     print("Nouns: ", nouns)
     print("NonP: ", nonPunctuation)
@@ -59,93 +73,71 @@ def splitEntry(entry, splits, firstWordsIgnore):
 
     while splits>0 and (len(verbs)>0 or len(nouns)>0 or len(nonPunctuation)>0):
         print("Splits: ", splits, "LENS: v - ", len(verbs), " n - ", len(nouns), " nP - ", len(nonPunctuation))
+        splitStr = ""
         if len(verbs)>0:
             choose = randint(0, len(verbs)-1)
-            print("BIRAM VERB: ", choose)
-            if verbs[choose][0] >= firstWordsIgnore and verbs[choose][0]<len(verbs)-1:
-
-                contentFirst = ""
-                for i in range(0, verbs[choose][0]+1):
-                    contentFirst = contentFirst + tokens[i] + " "
-
-                contentSecond = ""
-                for i in range(verbs[choose][0], len(tokens)):
-                    contentSecond = contentSecond + tokens[i] + " "
-
-                print(contentFirst + "--SPLIT--"+contentSecond)
-                write_Data("trainFirst.csv", contentFirst)
-                write_Data("trainSecond.csv", contentSecond)
-
+            #print("BIRAM VERB: ", choose)
+            if verbs[choose][0] >= firstWordsIgnore and verbs[choose][0] < len(posTokens)-1 and len(verbs[choose][1]) > 3:
+                splitStr = verbs[choose]
                 splits = splits - 1
             else:
-                splits=splits
+                print("FALSE Split str", verbs[choose])
             del verbs[choose]
         elif len(nouns)>0:
             choose = randint(0, len(nouns)-1)
-            print("BIRAM NOUN: ", choose)
-            if nouns[choose][0] >= firstWordsIgnore and nouns[choose][0]<len(nouns)-1:
-
-                contentFirst = ""
-                for i in range(0, nouns[choose][0]+1):
-                    contentFirst = contentFirst + tokens[i] + " "
-
-                contentSecond = ""
-                for i in range(nouns[choose][0], len(tokens)):
-                    contentSecond = contentSecond + tokens[i] + " "
-
-                print(contentFirst + "--SPLIT--" + contentSecond)
-                write_Data("trainFirst.csv", contentFirst)
-                write_Data("trainSecond.csv", contentSecond)
-
+            #print("BIRAM NOUN: ", choose)
+            if nouns[choose][0] >= firstWordsIgnore and nouns[choose][0]<len(posTokens)-1 and len(nouns[choose][1]) > 3:
+                splitStr = nouns[choose]
                 splits = splits - 1
             else:
-                splits = splits
+                print("FALSE Split str", nouns[choose])
             del nouns[choose]
         elif len(nonPunctuation)>0:
             choose = randint(0, len(nonPunctuation)-1)
-            print("BIRAM NONPUN: ", choose)
-            if nonPunctuation[choose][0] >= firstWordsIgnore and nonPunctuation[choose][0]<len(nonPunctuation)-1:
-
-                contentFirst = ""
-                for i in range(0, nonPunctuation[choose][0]+1):
-                    contentFirst = contentFirst + tokens[i] + " "
-
-                contentSecond = ""
-                for i in range(nonPunctuation[choose][0], len(tokens)):
-                    contentSecond = contentSecond + tokens[i] + " "
-
-                print(contentFirst + "--SPLIT--" + contentSecond)
-                write_Data("trainFirst.csv", contentFirst)
-                write_Data("trainSecond.csv", contentSecond)
-
+            #print("BIRAM NONPUN: ", choose)
+            if nonPunctuation[choose][0] >= firstWordsIgnore and nonPunctuation[choose][0]<len(posTokens)-1 and len(nonPunctuation[choose][1]) > 3:
+                splitStr = nonPunctuation[choose]
                 splits = splits - 1
             else:
-                splits = splits
+                print("FALSE Split str", nonPunctuation[choose])
             del nonPunctuation[choose]
-    print("LENS: v - ", len(verbs), " n - ", len(nouns), " nP - ", len(nonPunctuation))
+        print("Split str", splitStr)
+        if splitStr:
+            temp = entry.split(splitStr[1], 1)
+            print(temp)
+            write_Data("trainFirst.txt", entry[::-1])
+            write_Data("trainSecond.txt", splitStr[1] + temp[1])
+            write_Data("splitSet.txt", splitStr[1])
 
-    print("Verbs: ", verbs)
-    print("Nouns: ", nouns)
-    print("NonP: ", nonPunctuation)
+    #print("LENS: v - ", len(verbs), " n - ", len(nouns), " nP - ", len(nonPunctuation))
+
+    #print("Verbs: ", verbs)
+    #print("Nouns: ", nouns)
+    #print("NonP: ", nonPunctuation)
     print("--------------------------------------------------------------------------------------------------------------")
+    if splits > 0:
+        tempR+=1
+    print("TEMP: ", tempR)
+    return tempR
 
+noNoThreeSplits = 0
 
 arr1=[]
-
 read_Data('testData.csv', arr1)
 
+
 for i in range(len(arr1)):
     text = arr1[i]
-    splitEntry(text, 3, 4)
+    noNoThreeSplits += int(splitEntry(text, 3, 2))
 
 arr1=[]
-
 read_Data('trainData.csv', arr1)
 
-for i in range(len(arr1)):
+for i in range(0, len(arr1)):
+    print("ENTRY: ", i)
     text = arr1[i]
-    splitEntry(text, 3, 4)
+    noNoThreeSplits += int(splitEntry(text, 3, 2))
 
-
+print("NONO3SPLITS: ", noNoThreeSplits)
 
 
