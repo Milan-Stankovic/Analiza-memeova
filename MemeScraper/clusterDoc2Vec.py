@@ -1,24 +1,31 @@
 import warnings
+
+from matplotlib import pyplot
+from mpl_toolkits.mplot3d import Axes3D
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+
 warnings.filterwarnings(action='ignore', category=UserWarning, module='gensim')
 warnings.filterwarnings(action='ignore', category=DeprecationWarning, module='sklearn')
 import gensim
 import pickle
 from gensim.models.doc2vec import Doc2Vec, TaggedDocument
+from sklearn.decomposition import MiniBatchDictionaryLearning
 import os
 import collections
 import smart_open
 import random
 import csv
 import time
-from sklearn.cluster import KMeans
+from sklearn.cluster import KMeans, MiniBatchKMeans
 from sklearn import metrics
 import pylab as pl
 import matplotlib.pyplot as plt
-from sklearn.decomposition import PCA
+from sklearn.decomposition import PCA, IncrementalPCA, KernelPCA, LatentDirichletAllocation, TruncatedSVD, NMF
 from gensim.test.utils import get_tmpfile
 import scipy
 import numpy
 #scipy.show_config()
+from sklearn import decomposition
 
 
 def read_Test(fname):
@@ -296,30 +303,86 @@ for i in range(0,numberOfTypes):
 
 # meme key cluster value
 
+n_components = 3
+rng = pl.RandomState(0)
+
+
+estimators = [
+
+    ('PCA3D',  PCA(n_components=3), True),
+    ('TRUNCATEDSVD3D', TruncatedSVD(n_components), True),
+    ('MINIBATCHDICT3D', MiniBatchDictionaryLearning(n_components=3, alpha=1, n_iter=500), True)
 
 
 
+]
 
 
+#pca = PCA(n_components=2).fit(model.docvecs.vectors_docs)
+#datapoint = pca.transform(model.docvecs.vectors_docs)
 
-pca = PCA(n_components=2).fit(model.docvecs.vectors_docs)
-datapoint = pca.transform(model.docvecs.vectors_docs)
+#ipca = IncrementalPCA(n_components=2).fit(model.docvecs.vectors_docs)
+#datapoint = ipca.transform(model.docvecs.vectors_docs)
 
+#kpca = KernelPCA(kernel="rbf", fit_inverse_transform=True, gamma=10).fit(model.docvecs.vectors_docs)
+#X_kpca = kpca.transform(model.docvecs.vectors_docs)
+#X_back = kpca.inverse_transform(X_kpca)
 
-plt.figure
+for name, estimator, center in estimators:
 
+    data = model.docvecs.vectors_docs
+    fit_model = estimator.fit(abs(data))
+    if hasattr(estimator, 'cluster_centers_'):
+        components_ = estimator.cluster_centers_
+    else:
+        components_ = estimator.components_
 
+    datapoint = estimator.transform(abs(model.docvecs.vectors_docs))
 
+    label1 = ["#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#00FFFF", "#FF00FF", "#FF1493", "#808080", "#800000",
+              "#808000", "#008000", "#800080", "#008080", "#000080", "#800000"]
+    color = [label1[i] for i in labels]
 
+    fig = pyplot.figure()
+    ax = Axes3D(fig)
+
+    # datapoint = X_kpca
+
+    ax.scatter(datapoint[:, 0], datapoint[:, 1], datapoint[:, 2],  c=color)
+
+    centroids = kmeans_model.cluster_centers_
+    centroidpoint = fit_model.transform(abs(centroids))
+    # centroidpoint = kpca.transform(centroids)
+    ax.scatter(centroidpoint[:, 0], centroidpoint[:, 1], centroidpoint[:, 2], marker='^', s=150, c='#000000')
+
+    plt.savefig('C:\\Users\milan\OneDrive\Desktop\PCA\\' +name +'.png')
+    plt.close(fig)
+
+    # Plot an image representing the pixelwise variance provided by the
+    # estimator e.g its noise_variance_ attribute. The Eigenfaces estimator,
+    # via the PCA decomposition, also provides a scalar noise_variance_
+    # (the mean of pixelwise variance) that cannot be displayed as an image
+    # so we skip it.
+
+'''
 
 label1 = ["#FF0000","#00FF00","#0000FF","#FFFF00","#00FFFF","#FF00FF","#FF1493","#808080","#800000","#808000","#008000","#800080","#008080", "#000080", "#800000"]
 color = [label1[i] for i in labels]
-plt.scatter(datapoint[:, 0], datapoint[:, 1], c=color)
+
+fig, ax = plt.subplots(figsize=(18, 8))
+
+#datapoint = X_kpca
+
+ax.scatter(datapoint[:, 0], datapoint[:, 1], c=color)
 
 centroids = kmeans_model.cluster_centers_
-centroidpoint = pca.transform(centroids)
-plt.scatter(centroidpoint[:, 0], centroidpoint[:, 1], marker='^', s=150, c='#000000')
-plt.show()
+#centroidpoint = pca.transform(centroids)
+#centroidpoint = kpca.transform(centroids)
+ax.scatter(centroidpoint[:, 0], centroidpoint[:, 1], marker='^', s=150, c='#000000')
+
+plt.savefig('C:\\Users\milan\OneDrive\Desktop\PCA\kpca.png')
+plt.close(fig)
+
 
 
 testText = list(read_Test('testData.csv'))
@@ -375,6 +438,8 @@ for i in range(0, numberOfTypes):
 
 
 
+
+'''
 #test = model.infer_vector(['Hide', 'the', 'pain','Grba','and', 'git', 'good'])
 #result = model.docvecs.most_similar([test], topn=len(model.docvecs))
 
